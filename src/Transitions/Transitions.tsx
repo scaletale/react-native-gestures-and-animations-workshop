@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import Animated from "react-native-reanimated";
-import { Button, Card, StyleGuide, cards } from "../components";
+import Animated, { interpolate } from "react-native-reanimated";
+import { Button, Card, StyleGuide, cards, CARD_WIDTH } from "../components";
+import { useTransition, mix } from "react-native-redash";
 
 const styles = StyleSheet.create({
   container: {
@@ -20,17 +21,24 @@ const alpha = Math.PI / 6;
 
 const UseTransition = () => {
   const [toggled, setToggle] = useState(false);
+
+  const transition = useTransition(toggled, {
+    duration: 300
+  });
+
   return (
     <View style={styles.container}>
       {cards.slice(0, 3).map((card, index) => {
-        const rotate = toggled ? (index - 1) * alpha : 0;
+        const rotate = mix(transition, 0, (index - 1) * alpha);
+        // transform: [{translateX: -CARD_WIDTH/2}, { rotate }, {translateX: CARD_WIDTH/2}],
+
         return (
           <Animated.View
             key={card}
             style={[
               styles.overlay,
               {
-                transform: [{ rotate: `${rotate}rad` }],
+                transform: [{ translateX: -CARD_WIDTH / 2 }, { rotate }, { translateX: CARD_WIDTH / 2 }],
               },
             ]}
           >

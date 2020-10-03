@@ -1,1 +1,1 @@
-export { default } from "./GesturesFinal";
+export { default } from "./Gestures";
